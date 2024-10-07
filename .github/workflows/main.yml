@@ -13,17 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js (or your environment)
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'  # Change this to your required Node.js version
 
       - name: Install dependencies
         run: |
+          cd Library-Management-main/Library-Management-main  # Navigate to the correct directory
           npm install  # Change this command if you use a different package manager
 
       - name: Build the project
         run: |
+          cd Library-Management-main/Library-Management-main  # Navigate to the correct directory
           npm run build  # Change this command if your build command is different
 
       - name: Deploy to Server
