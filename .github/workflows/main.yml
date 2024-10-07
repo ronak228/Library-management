@@ -1,0 +1,40 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if it's not 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js (or your environment)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Change this to your required Node.js version
+
+      - name: Install dependencies
+        run: |
+          npm install  # Change this command if you use a different package manager
+
+      - name: Build the project
+        run: |
+          npm run build  # Change this command if your build command is different
+
+      - name: Deploy to Server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}  # Set this in GitHub Secrets
+          USERNAME: ${{ secrets.USERNAME }}  # Set this in GitHub Secrets
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}  # Set this in GitHub Secrets
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          scp -o StrictHostKeyChecking=no -i private_key.pem -r ./build/* $USERNAME@$SERVER_IP:/path/to/deploy/  # Adjust this path
+
+      - name: Clean up
+        run: rm private_key.pem
